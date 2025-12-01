@@ -9,11 +9,11 @@ typealias Rotations = List<Pair<Char, Int>>
 
 fun main(): Unit = runBlocking {
     Day1.solve(
-        exampleAnswer1 = 3,
-        exampleAnswer2 = 6,
+        example1 = 3,
+        example2 = 6,
 
-        actualAnswer1 = 992,
-        actualAnswer2 = 6133
+        answer1 = 992,
+        answer2 = 6133
     )
 }
 
