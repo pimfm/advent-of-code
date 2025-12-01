@@ -3,6 +3,7 @@ package aoc2025
 import Day
 import kotlinx.coroutines.runBlocking
 import mapLines
+import toInt
 import java.io.File
 
 typealias Rotations = List<Pair<Char, Int>>
@@ -24,19 +25,17 @@ object Day1 : Day<Rotations>(1, 2025) {
         .runningFold(50, ::rotateDial)
         .count { it == 0 }
 
-    override suspend fun part2(input: Rotations) = input.fold(50 to 0) { acc, rotation ->
+    override suspend fun part2(input: Rotations) = input.fold(50 to 0) { (position, zeroCount), rotation ->
         val (direction, amount) = rotation
-        val (position, numberOfZeros) = acc
-
         val fullLoops = amount / 100
         val countPastZero = when {
             position == 0 -> false // Avoid duplicate counts; zero is counted when ending on this number
             direction == 'L' -> amount.mod(100) >= position
             direction == 'R' -> amount.mod(100) >= 100 - position
             else -> false
-        }.let { if (it) 1 else 0 }
+        }.toInt()
 
-        rotateDial(position, rotation) to numberOfZeros + fullLoops + countPastZero
+        rotateDial(position, rotation) to zeroCount + fullLoops + countPastZero
     }.second
 
     private fun rotateDial(position: Int, rotation: Pair<Char, Int>): Int {

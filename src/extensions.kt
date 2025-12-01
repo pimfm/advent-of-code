@@ -74,6 +74,11 @@ val <T> T.print get() = also(::println)
 fun String.substringBetween(start: String, end: String) = substringAfter(start).substringBefore(end)
 
 /**
+ * Boolean extensions
+ */
+fun Boolean.toInt() = if (this) 1 else 0
+
+/**
  * Grab library
  * A way of quickly scooping input values in a format
  */
