@@ -31,8 +31,8 @@ object Day1 : Day<Rotations>(1, 2025) {
         val fullLoops = amount / 100
         val countPastZero = when {
             position == 0 -> false // Avoid duplicate counts; zero is counted when ending on this number
-            direction == 'L' -> amount % 100 >= position
-            direction == 'R' -> amount % 100 >= 100 - position
+            direction == 'L' -> amount.mod(100) >= position
+            direction == 'R' -> amount.mod(100) >= 100 - position
             else -> false
         }.let { if (it) 1 else 0 }
 

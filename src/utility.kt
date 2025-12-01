@@ -12,14 +12,14 @@ val Day<*>.exampleInput
 
 context(Day<T>)
 fun <T> NotImplementedError.printNotImplemented(part: Int) =
-    println("💻 Year $year - Day $day.$part is not yet implemented")
+    println("💻Year $year - Day $day.$part is not yet implemented")
 
 context(Day<T>)
 fun <T> IncorrectAlgorithmError.printIncorrectAlgorithm(part: Int) =
-    println("🚧 Year $year - Day $day.$part is incorrect. Expected $expected, got $actual")
+    println("🚧Year $year - Day $day.$part is incorrect. Expected $expected, got $actual")
 
 infix fun <T> T.then(block: (input: T) -> Answer) = block(this).also { (year, day, part, result) ->
-    print("✅  Year $year, Day $day.$part: $result")
+    print("✅Year $year, Day $day.$part: $result")
 }
 
 fun <T> Day<T>.answer(part: Int) =
