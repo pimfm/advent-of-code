@@ -28,14 +28,14 @@ object Day1 : Day<Rotations>(1, 2025) {
     override suspend fun part2(input: Rotations) = input.fold(50 to 0) { (position, zeroCount), rotation ->
         val (direction, amount) = rotation
         val fullLoops = amount / 100
-        val countZeros = when {
+        val wentPastZero = when {
             position == 0 -> false // Avoid duplicate counts; zero is counted when ending on this number
             direction == 'L' -> amount.mod(100) >= position
             direction == 'R' -> amount.mod(100) >= 100 - position
             else -> false
-        }.toInt()
+        }
 
-        rotateDial(position, rotation) to zeroCount + fullLoops + countZeros
+        rotateDial(position, rotation) to zeroCount + fullLoops + wentPastZero.toInt()
     }.second
 
     private fun rotateDial(position: Int, rotation: Pair<Char, Int>): Int {
