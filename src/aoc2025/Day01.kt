@@ -25,7 +25,7 @@ object Day1 : Day<Rotations>(1, 2025) {
         .runningFold(50, ::rotateDial)
         .count { it == 0 }
 
-    override suspend fun part2(input: Rotations) = input.fold(50 to 0) { (position, zeroCount), rotation ->
+    override suspend fun part2(input: Rotations) = input.fold(50 to 0) { (position, acc), rotation ->
         val (direction, amount) = rotation
         val fullLoops = amount / 100
         val wentPastZero = when {
@@ -35,7 +35,7 @@ object Day1 : Day<Rotations>(1, 2025) {
             else -> false
         }
 
-        rotateDial(position, rotation) to zeroCount + fullLoops + wentPastZero.toInt()
+        rotateDial(position, rotation) to acc + fullLoops + wentPastZero.toInt()
     }.second
 
     private fun rotateDial(position: Int, rotation: Pair<Char, Int>): Int {
