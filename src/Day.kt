@@ -15,6 +15,11 @@ abstract class Day<T>(val day: Int, val year: Int) {
         process(2, ::part2, example2)
     }
 
+    suspend fun solve(example1: Number, example2: Number, answer1: Number) {
+        process(1, ::part1, example1, answer1)
+        process(2, ::part2, example2)
+    }
+
     suspend fun solve(example1: Number, example2: Number, answer1: Number, answer2: Number) {
         process(1, ::part1, example1, answer1)
         process(2, ::part2, example2, answer2)

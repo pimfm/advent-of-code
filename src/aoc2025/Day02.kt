@@ -17,6 +17,9 @@ typealias IDRanges = List<LongRange>
 fun main(): Unit = runBlocking {
     Day2.solve(
         example1 = 1227775554,
+        example2 = 4174379265,
+
+        answer1 = 41294979841
     )
 }
 
@@ -36,7 +39,7 @@ object Day2 : Day<IDRanges>(2, 2025) {
         TODO("Not yet implemented")
     }
 
-    private fun findInvalids(range: LongRange): List<Long> {
+    private tailrec fun findInvalids(range: LongRange): List<Long> {
         val (from, to) = range
         val (fromStart, fromEnd) = from.cutInTwo()
         val (toStart, toEnd) = to.cutInTwo()
@@ -46,7 +49,7 @@ object Day2 : Day<IDRanges>(2, 2025) {
             from.digitCount.isOdd() -> findInvalids(from.ceilToNextBase10() .. to)
             to.digitCount.isOdd() -> findInvalids(from .. to.floorToPreviousBase10())
             fromStart < fromEnd -> findInvalids(glue(fromStart + 1, fromStart + 1) .. to)
-            toStart > toEnd -> findInvalids(from .. glue(toStart - 1, toEnd - 1))
+            toStart > toEnd -> findInvalids(from .. glue(toStart - 1, toStart - 1))
             else -> (fromStart .. toStart).map { glue(it, it) }
         }
     }
