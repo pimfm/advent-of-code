@@ -2,17 +2,18 @@ package aoc2025
 
 import Day
 import toNextBase10
-import component1
-import component2
 import cutInTwo
-import digitCount
+import decrement
 import toPreviousBase10
-import glue
+import increment
+import isEven
 import isOdd
+import jdk.vm.ci.code.CodeUtil.isEven
 import kotlinx.coroutines.runBlocking
+import sliceEqualParts
 import java.io.File
 
-typealias IDRanges = List<LongRange>
+typealias IDRanges = List<Pair<String, String>>
 
 fun main(): Unit = runBlocking {
     Day2.solve(
@@ -28,31 +29,34 @@ object Day2 : Day<IDRanges>(2, 2025) {
         .readText()
         .split(",")
         .map {
-            it.substringBefore("-").toLong() .. it.substringAfter("-").toLong()
+            it.substringBefore("-") to it.substringAfter("-")
         }
 
     override suspend fun part1(input: IDRanges) = input
-        .flatMap(::findInvalids)
+        .flatMap { findInvalids(it.first, it.second, listOf(it.second.length / 2)) }
         .sum()
 
-    private tailrec fun findInvalids(range: LongRange): List<Long> {
-        val (from, to) = range
+    override suspend fun part2(input: IDRanges) = input
+        .flatMap { findInvalids(it.first, it.second, (1 .. it.second.length / 2).toList()) }
+        .sum()
+
+    private tailrec fun findInvalids(
+        from: String,
+        to: String,
+        patterns: List<Int>
+    ): List<Long> {
+        val equalParts = from.sliceEqualParts(patterns)
+
         val (fromStart, fromEnd) = from.cutInTwo()
         val (toStart, toEnd) = to.cutInTwo()
 
         return when {
             from > to -> emptyList()
-            from.digitCount.isOdd() -> findInvalids(from.toNextBase10() .. to)
-            to.digitCount.isOdd() -> findInvalids(from .. to.toPreviousBase10())
-            fromStart < fromEnd -> findInvalids(glue(fromStart + 1, fromStart + 1) .. to)
-            toStart > toEnd -> findInvalids(from .. glue(toStart - 1, toStart - 1))
-            else -> (fromStart .. toStart).map { glue(it, it) }
+            patterns.all(::isEven) && from.length.isOdd() -> findInvalids(from.toNextBase10(), to, patterns)
+            patterns.all(::isEven) && to.length.isOdd() -> findInvalids(from, to.toPreviousBase10(), patterns)
+            fromStart < fromEnd -> findInvalids(fromStart.increment() + fromStart.increment(), to, patterns)
+            toStart > toEnd -> findInvalids(from, toStart.decrement() + toStart.decrement(), patterns)
+            else -> (fromStart.toLong() .. toStart.toLong()).map { it + it }
         }
-    }
-
-    override suspend fun part2(input: IDRanges): Number {
-        println(input.sumOf { it.last - it.first })
-
-        return 4174379265L
     }
 }

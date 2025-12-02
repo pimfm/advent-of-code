@@ -96,15 +96,18 @@ val Long.digitCount get() = toString().length
 /**
  * E.g. 89 becomes 100, 4322 becomes 10000
  */
-fun Long.toNextBase10() = "1".padEnd(digitCount + 1, '0').toLong()
-fun Long.toPreviousBase10() = "".padEnd(digitCount - 1, '9').toLong()
+fun String.toNextBase10() = "1".padEnd(length + 1, '0')
+fun String.toPreviousBase10() = "".padEnd(length - 1, '9')
 
-fun Long.cut(index: Int): List<Long> {
-    return listOf(toString().substring(0, index).toLong(), toString().substring(index).toLong())
+fun String.increment() = toLong().inc().toString()
+fun String.decrement() = toLong().dec().toString()
+
+fun String.cut(index: Int): List<String> {
+    return listOf(substring(0, index), substring(index))
 }
 
-fun Long.cutInTwo() = cut(digitCount / 2)
-fun glue(first: Long, second: Long) = (first.toString() + second.toString()).toLong()
+fun String.cutInTwo() = cut(length / 2)
+fun String.sliceEqualParts(patternLengths: List<Int>): List<String> = emptyList()
 
 /**
  * Int extensions
