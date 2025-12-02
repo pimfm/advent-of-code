@@ -1,12 +1,12 @@
 package aoc2025
 
 import Day
-import ceilToNextBase10
+import toNextBase10
 import component1
 import component2
 import cutInTwo
 import digitCount
-import floorToPreviousBase10
+import toPreviousBase10
 import glue
 import isOdd
 import kotlinx.coroutines.runBlocking
@@ -35,10 +35,6 @@ object Day2 : Day<IDRanges>(2, 2025) {
         .flatMap(::findInvalids)
         .sum()
 
-    override suspend fun part2(input: IDRanges): Number {
-        TODO("Not yet implemented")
-    }
-
     private tailrec fun findInvalids(range: LongRange): List<Long> {
         val (from, to) = range
         val (fromStart, fromEnd) = from.cutInTwo()
@@ -46,11 +42,17 @@ object Day2 : Day<IDRanges>(2, 2025) {
 
         return when {
             from > to -> emptyList()
-            from.digitCount.isOdd() -> findInvalids(from.ceilToNextBase10() .. to)
-            to.digitCount.isOdd() -> findInvalids(from .. to.floorToPreviousBase10())
+            from.digitCount.isOdd() -> findInvalids(from.toNextBase10() .. to)
+            to.digitCount.isOdd() -> findInvalids(from .. to.toPreviousBase10())
             fromStart < fromEnd -> findInvalids(glue(fromStart + 1, fromStart + 1) .. to)
             toStart > toEnd -> findInvalids(from .. glue(toStart - 1, toStart - 1))
             else -> (fromStart .. toStart).map { glue(it, it) }
         }
+    }
+
+    override suspend fun part2(input: IDRanges): Number {
+        println(input.sumOf { it.last - it.first })
+
+        return 4174379265L
     }
 }

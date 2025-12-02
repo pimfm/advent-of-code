@@ -96,15 +96,11 @@ val Long.digitCount get() = toString().length
 /**
  * E.g. 89 becomes 100, 4322 becomes 10000
  */
-fun Long.ceilToNextBase10() = "1".padEnd(digitCount + 1, '0').toLong()
-fun Long.floorToPreviousBase10() = "".padEnd(digitCount - 1, '9').toLong()
+fun Long.toNextBase10() = "1".padEnd(digitCount + 1, '0').toLong()
+fun Long.toPreviousBase10() = "".padEnd(digitCount - 1, '9').toLong()
 
-fun Long.cut(index: Int): Pair<Long, Long> {
-    return if (digitCount.isOdd() || this == 0L) {
-        this to 0L // Hack that works within the scope of Advent of Code 🤙
-    } else {
-        toString().substring(0, index).toLong() to toString().substring(index).toLong()
-    }
+fun Long.cut(index: Int): List<Long> {
+    return listOf(toString().substring(0, index).toLong(), toString().substring(index).toLong())
 }
 
 fun Long.cutInTwo() = cut(digitCount / 2)
