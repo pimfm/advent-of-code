@@ -86,6 +86,30 @@ fun String.grabLongs() = "\\d+".toRegex().findAll(this).map { it.value.toLong() 
 fun String.grabInts() = "\\d+".toRegex().findAll(this).map { it.value.toInt() }.toList()
 
 /**
+ * Long extensions
+ */
+operator fun LongRange.component1() = first
+operator fun LongRange.component2() = last
+
+val Long.digitCount get() = toString().length
+
+/**
+ * E.g. 89 becomes 100, 4322 becomes 10000
+ */
+fun Long.ceilToNextBase10() = "1".padEnd(digitCount + 1, '0').toLong()
+fun Long.floorToPreviousBase10() = "".padEnd(digitCount, '9').toLong()
+
+fun Long.cut(index: Int) = listOf(toString().substring(0, index).toLong(), toString().substring(index).toLong())
+fun Long.cutInTwo() = cut(digitCount / 2)
+fun glue(first: Long, second: Long) = (first.toString() + second.toString()).toLong()
+
+/**
+ * Int extensions
+ */
+fun Int.isEven() = this % 2 == 0
+fun Int.isOdd() = this % 2 == 1
+
+/**
  * Questionable standard library additions
  */
 // Does the opposite of flatMap.
