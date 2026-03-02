@@ -93,11 +93,11 @@ operator fun LongRange.component2() = last
 
 val Long.digitCount get() = toString().length
 
-/**
- * E.g. 89 becomes 100, 4322 becomes 10000
- */
+// e.g. 89 becomes 100, 4322 becomes 10000
 fun String.toNextBase10() = "1".padEnd(length + 1, '0')
-fun String.toPreviousBase10() = "".padEnd(length - 1, '9')
+
+// e.g. 49 becomes 9, 4322 becomes 999
+fun String.toPreviousBase10() = "".padEnd(length - 1, '9').ifBlank { "0" }
 
 fun String.increment() = toLong().inc().toString()
 fun String.decrement() = toLong().dec().toString()

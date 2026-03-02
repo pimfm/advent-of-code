@@ -2,11 +2,7 @@ package aoc2025
 
 import Day
 import toNextBase10
-import cutInTwo
-import decrement
 import toPreviousBase10
-import increment
-import isEven
 import isOdd
 import jdk.vm.ci.code.CodeUtil.isEven
 import kotlinx.coroutines.runBlocking
@@ -33,30 +29,39 @@ object Day2 : Day<IDRanges>(2, 2025) {
         }
 
     override suspend fun part1(input: IDRanges) = input
-        .flatMap { findInvalids(it.first, it.second, listOf(it.second.length / 2)) }
+        .flatMap { findInvalids(it.first, it.second, listOf(2)) }
         .sum()
 
     override suspend fun part2(input: IDRanges) = input
-        .flatMap { findInvalids(it.first, it.second, (1 .. it.second.length / 2).toList()) }
+        .flatMap { findInvalids(it.first, it.second) }
         .sum()
 
     private tailrec fun findInvalids(
         from: String,
         to: String,
-        patterns: List<Int>
+        patterns: List<Int> = emptyList()
     ): List<Long> {
-        val equalParts = from.sliceEqualParts(patterns)
-
-        val (fromStart, fromEnd) = from.cutInTwo()
-        val (toStart, toEnd) = to.cutInTwo()
+        /**
+         * Plan:
+         * Have equal parts in a list of parts (say 3 slices with pattern length 3)
+         * Check if all 3 are equal, add to return if so. I think we can't find the lowest anymore.
+         * Instead, we start at lowest number of range and increment all the way through. Drop the two start cases
+         * last case: (patterns).any { in range }() + findInvalids(glue(from++) * patternlength) + findInvalids(glue(from++) * nextpatternlength)
+         * Do the calls only for the patterns and match them to the full LongRange (are in the range). Increment by 1 for all values and increment all patterns.
+         * (or just lowest pattern? -> Yes only most digit pattern, as it will calculate equal parts inside. Although:
+         * You could also just pass it's own pattern. Interesting.)
+         */
+        val equalParts =
 
         return when {
             from > to -> emptyList()
             patterns.all(::isEven) && from.length.isOdd() -> findInvalids(from.toNextBase10(), to, patterns)
             patterns.all(::isEven) && to.length.isOdd() -> findInvalids(from, to.toPreviousBase10(), patterns)
-            fromStart < fromEnd -> findInvalids(fromStart.increment() + fromStart.increment(), to, patterns)
-            toStart > toEnd -> findInvalids(from, toStart.decrement() + toStart.decrement(), patterns)
-            else -> (fromStart.toLong() .. toStart.toLong()).map { it + it }
+            else -> from
+                // Consider returning a map of patternLength -> set -> Good to only have repeating patterns in map
+                .sliceEqualParts(patterns) // Check case for from being "8" which can result in a set of length 1
+                .filter { it.toSet().length == 1 } // All parts are equal
+                .filter {} emptyList() // (fromStart.toLong() .. toStart.toLong()).map { it + it }
         }
     }
 }
